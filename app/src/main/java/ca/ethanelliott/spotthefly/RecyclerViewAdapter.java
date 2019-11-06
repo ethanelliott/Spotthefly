@@ -5,58 +5,68 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapter";
 
-    private ArrayList<String> mSongName = new ArrayList<>();
+    ArrayList<Song> mSong;
     private Context mContext;
+    private MainActivity mainActivity;
 
-    public RecyclerViewAdapter(Context mContext, ArrayList<String> mSongName) {
-        this.mSongName = mSongName;
+    RecyclerViewAdapter(Context mContext, MainActivity mainActivity, ArrayList<Song> mSong) {
+        this.mSong = mSong;
         this.mContext = mContext;
+        this.mainActivity = mainActivity;
     }
-    
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.music_listitem, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
-        holder.textView.setText(mSongName.get(position));
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: clicked on: " + mSongName.get(position));
-                Toast.makeText(mContext, mSongName.get(position), Toast.LENGTH_SHORT).show();
-            }
+        holder.textView.setText(mSong.get(position).getName());
+        holder.deleteEntryBtn.setOnClickListener(view -> {
+            mainActivity.makeToast(mContext, "DELETE: " + mSong.get(position).getName());
+            SongDB songDB = new SongDB(mContext);
+            String uuid = mSong.get(position).getUuid();
+            songDB.deleteSong(uuid);
+        });
+        holder.parentLayout.setOnClickListener(v -> {
+            Log.d(TAG, "onClick: clicked on: " + mSong.get(position));
+            mainActivity.makeToast(mContext, mSong.get(position).getName());
+            mainActivity.songPicked(position);
         });
     }
 
     @Override
     public int getItemCount() {
-        return mSongName.size();
+        return mSong.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
+        ImageView isPlayingIcon;
         LinearLayout parentLayout;
-        public ViewHolder(@NonNull View itemView) {
+        ImageButton deleteEntryBtn;
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.songName);
+            isPlayingIcon = itemView.findViewById(R.id.isPlayingIcon);
+            deleteEntryBtn = itemView.findViewById(R.id.deleteEntryBtn);
             parentLayout = itemView.findViewById(R.id.parentLayout);
         }
     }

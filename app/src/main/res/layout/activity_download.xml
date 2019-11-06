@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#303030"
-    tools:context=".MainActivity">
+    tools:context=".DownloadActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,8 +18,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Download Music"
+                android:textColor="#FFFFFF"
+                android:textSize="30sp" />
+
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/downloadRecyleView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbars="horizontal" />
@@ -45,6 +53,7 @@
             android:background="@color/colorPrimary"
             android:drawableTop="@drawable/home"
             android:elevation="0dp"
+            android:onClick="gotoHome"
             android:textColor="#FFFFFF" />
 
         <Button
@@ -66,7 +75,6 @@
             android:background="@color/colorPrimary"
             android:drawableTop="@drawable/download"
             android:elevation="0dp"
-            android:onClick="gotoDownload"
             android:text="Store"
             android:textColor="#FFFFFF" />
     </LinearLayout>
